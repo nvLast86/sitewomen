@@ -1,5 +1,6 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render
+from datetime import datetime
 
 
 # Create your views here.
@@ -16,4 +17,9 @@ def categories_by_slug(request, cat_slug):
 
 
 def archive(request, year):
+    if year > datetime.now().year:
+        raise Http404
     return HttpResponse(f'<h1>Архив по годам</h1><p>{year}</p>')
+
+def page_not_found(request, exception):
+    return HttpResponseNotFound('<h1>Страница не найдена</h1>')
