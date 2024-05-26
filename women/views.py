@@ -24,5 +24,6 @@ def archive(request, year):
         # raise Http404
     # return HttpResponse(f'<h1>Архив по годам</h1><p>{year}</p>')
 
+
 def page_not_found(request, exception):
     return HttpResponseNotFound('<h1>Страница не найдена</h1>')
