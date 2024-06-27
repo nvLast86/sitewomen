@@ -2,29 +2,21 @@ from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect
 from datetime import datetime
 from django.urls import reverse
+from django.template.defaultfilters import slugify
 
 menu=['О сайте','Добавить статью','Обратная связь','Войти']
 
-class MyClass:
-
-    def __init__(self, a, b):
-        self.a = a
-        self.b = b
-
-    def __str__(self):
-        return f'объект с переменными {self.a} и {self.b}'
+data_db = [ {'id': 1, 'title': 'Анджелина Джоли', 'content': 'Биография Анджелины Джоли', 'is_published': True},
+            {'id': 2, 'title': 'Марго Робби', 'content': 'Биография Марго Робби', 'is_published': False},
+            {'id': 3, 'title': 'Джулия Робертс', 'content': 'Биография Джулии Робертс', 'is_published': True},
+            ]
 
 
-# Create your views here.
 def index(request):
     data = {
-        'title': 'Главная страница',
+        'title': 'главная страница',
         'menu': menu,
-        'float': 28.56,
-        'lst': [1, 2, 'dff', True],
-        'set': {1, 2, 3, 2},
-        'dict': {'k': 'v', 'k2': 'v2'},
-        'obj': MyClass(10,20)
+        'posts': data_db,
     }
     return render(request, 'women/index.html', context=data)
 
