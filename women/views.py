@@ -26,7 +26,7 @@ def index(request):
 
 
 def about(request):
-    data = {'author': 'Nikolay Lastenko'}
+    data = {'author': 'Nikolay Lastenko', 'title': 'О сайте', 'menu': menu}
     return render(request, "women/about.html", context=data)
 
 
