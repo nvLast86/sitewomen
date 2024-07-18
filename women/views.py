@@ -12,8 +12,10 @@ menu = [{'title': "О сайте", 'url_name': 'about'},
         {'title': "Войти", 'url_name': 'login'}
 ]
 
+
 def index(request):
-    posts = Women.published.all()
+    posts = Women.published.all().select_related('cat')
+
     data = {
         'title': 'главная страница',
         'menu': menu,
@@ -43,7 +45,7 @@ def show_post(request, post_slug):
 
 def show_categories(request, cat_slug):
     category = get_object_or_404(Category, slug=cat_slug)
-    posts = Women.published.filter(cat_id=category.pk)
+    posts = Women.published.filter(cat_id=category.pk).select_related('cat')
     data = {
         'title': f'Рубрика {category.name}',
         'menu': menu,
@@ -55,7 +57,7 @@ def show_categories(request, cat_slug):
 
 def show_tag_postlist(request, tag_slug):
     tag = get_object_or_404(TagPost, slug=tag_slug)
-    posts = tag.tags.filter(is_published=Women.Status.PUBLISHED)
+    posts = tag.tags.filter(is_published=Women.Status.PUBLISHED).select_related('cat')
     data = {
         'title': f'Тег: {tag.tag}',
         'menu': menu,
