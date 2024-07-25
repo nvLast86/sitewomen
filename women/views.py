@@ -4,6 +4,7 @@ from datetime import datetime
 from django.urls import reverse
 from django.template.defaultfilters import slugify
 
+from women.forms import AddPostForm
 from women.models import Women, Category, TagPost
 
 menu = [{'title': "О сайте", 'url_name': 'about'},
@@ -68,7 +69,19 @@ def show_tag_postlist(request, tag_slug):
 
 
 def addpage(request):
-    return render(request, 'women/addpage.html', {'menu': menu, 'title': 'Добавление статьи'})
+    if request.method == 'POST':
+        form = AddPostForm(request.POST)
+        if form.is_valid():
+            print(form.cleaned_data)
+    else:
+        form = AddPostForm()
+
+    data = {
+        'menu': menu,
+        'title': 'Добавление страницы',
+        'form': form
+    }
+    return render(request, 'women/addpage.html', data)
 
 
 def contact(request):
