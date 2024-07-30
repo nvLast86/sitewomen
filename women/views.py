@@ -4,7 +4,7 @@ from datetime import datetime
 from django.urls import reverse
 from django.template.defaultfilters import slugify
 
-from women.forms import AddPostForm
+from women.forms import AddPostForm, UploadFileForm
 from women.models import Women, Category, TagPost
 
 menu = [{'title': "О сайте", 'url_name': 'about'},
@@ -25,9 +25,20 @@ def index(request):
     }
     return render(request, 'women/index.html', context=data)
 
+def handle_upload_file(f):
+    with open(f'uploads/{f.name}', 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
 
 def about(request):
-    data = {'author': 'Nikolay Lastenko', 'title': 'О сайте', 'menu': menu}
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            handle_upload_file(form.cleaned_data['file'])
+
+    else:
+        form = UploadFileForm()
+    data = {'author': 'Nikolay Lastenko', 'title': 'О сайте', 'menu': menu, 'form': form,}
     return render(request, "women/about.html", context=data)
 
 
