@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from datetime import datetime
 from django.urls import reverse
 from django.template.defaultfilters import slugify
+from django.views.generic import TemplateView
 
 from women.forms import AddPostForm, UploadFileForm
 from women.models import Women, Category, TagPost, UploadFiles
@@ -14,21 +15,35 @@ menu = [{'title': "О сайте", 'url_name': 'about'},
 ]
 
 
-def index(request):
-    posts = Women.published.all().select_related('cat')
+# def index(request):
+#     posts = Women.published.all().select_related('cat')
+#
+#     data = {
+#         'title': 'главная страница',
+#         'menu': menu,
+#         'posts': posts,
+#         'cat_selected': 0,
+#     }
+#     return render(request, 'women/index.html', context=data)
 
-    data = {
+
+class WomenHome(TemplateView):
+    template_name = 'women/index.html'
+    extra_context = {
         'title': 'главная страница',
         'menu': menu,
-        'posts': posts,
+        'posts': Women.published.all().select_related('cat'),
         'cat_selected': 0,
     }
-    return render(request, 'women/index.html', context=data)
 
-# def handle_upload_file(f):
-#    with open(f'uploads/{f.name}', 'wb+') as destination:
-#        for chunk in f.chunks():
-#            destination.write(chunk)
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context['title'] = 'Главная страница'
+    #     context['menu'] = menu
+    #     context['posts'] = Women.objects.all().select_related('cat')
+    #     context['cat_selected'] = int(self.request.GET.get('cat_id', 0))
+    #     return context
+
 
 def about(request):
     if request.method == 'POST':

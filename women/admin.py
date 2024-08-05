@@ -42,7 +42,7 @@ class WomenAdmin(admin.ModelAdmin):
     @admin.display(description='Краткое описание', ordering='content')
     def post_photo(self, women: Women):
         if women.photo:
-            return mark_safe(f"<img src='{women.photo.url} width=50">)
+            return mark_safe(f"<img src='{women.photo.url} width=50>")
         return 'Без фото'
 
     @admin.action(description='Опубликовать выбранные записи')
