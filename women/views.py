@@ -1,9 +1,9 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from datetime import datetime
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.template.defaultfilters import slugify
-from django.views.generic import TemplateView, ListView, DetailView
+from django.views.generic import TemplateView, ListView, DetailView, FormView
 
 from women.forms import AddPostForm, UploadFileForm
 from women.models import Women, Category, TagPost, UploadFiles
@@ -170,6 +170,19 @@ class TagPostList(ListView):
 #         'form': form
 #     }
 #     return render(request, 'women/addpage.html', data)
+
+class AddPage(FormView):
+    form_class = AddPostForm
+    template_name = 'women/addpage.html'
+    success_url = reverse_lazy('home')
+    extra_context = {
+        'title': 'Добавление статьи',
+        'menu': menu,
+    }
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
 
 
 def contact(request):
