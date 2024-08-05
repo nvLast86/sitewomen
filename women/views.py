@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from datetime import datetime
 from django.urls import reverse, reverse_lazy
 from django.template.defaultfilters import slugify
-from django.views.generic import TemplateView, ListView, DetailView, FormView
+from django.views.generic import TemplateView, ListView, DetailView, FormView, CreateView, UpdateView
 
 from women.forms import AddPostForm, UploadFileForm
 from women.models import Women, Category, TagPost, UploadFiles
@@ -171,18 +171,18 @@ class TagPostList(ListView):
 #     }
 #     return render(request, 'women/addpage.html', data)
 
-class AddPage(FormView):
-    form_class = AddPostForm
+class AddPage(CreateView):
+    model = Women
+    fields = ['title', 'content', 'photo', 'is_published', 'cat']
     template_name = 'women/addpage.html'
     success_url = reverse_lazy('home')
     extra_context = {
-        'title': 'Добавление статьи',
+        'title': 'Редактирование статьи',
         'menu': menu,
     }
 
-    def form_valid(self, form):
-        form.save()
-        return super().form_valid(form)
+
+class UpdateView(UpdateView):
 
 
 def contact(request):
