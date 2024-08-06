@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from datetime import datetime
 from django.urls import reverse, reverse_lazy
 from django.template.defaultfilters import slugify
-from django.views.generic import TemplateView, ListView, DetailView, FormView, CreateView, UpdateView
+from django.views.generic import TemplateView, ListView, DetailView, FormView, CreateView, UpdateView, DeleteView
 
 from women.forms import AddPostForm, UploadFileForm
 from women.models import Women, Category, TagPost, UploadFiles
@@ -12,7 +12,7 @@ menu = [{'title': "О сайте", 'url_name': 'about'},
         {'title': "Добавить статью", 'url_name': 'add_page'},
         {'title': "Обратная связь", 'url_name': 'contact'},
         {'title': "Войти", 'url_name': 'login'}
-]
+        ]
 
 
 # def index(request):
@@ -58,7 +58,7 @@ def about(request):
             fp.save()
     else:
         form = UploadFileForm()
-    data = {'author': 'Nikolay Lastenko', 'title': 'О сайте', 'menu': menu, 'form': form,}
+    data = {'author': 'Nikolay Lastenko', 'title': 'О сайте', 'menu': menu, 'form': form, }
     return render(request, "women/about.html", context=data)
 
 
@@ -143,7 +143,7 @@ class TagPostList(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         tag = TagPost.objects.get(slug=self.kwargs['tag_slug'])
-        context['title'] = 'Тег: ' +  tag.tag
+        context['title'] = 'Тег: ' + tag.tag
         context['menu'] = menu
         context['cat_selected'] = None
         return context
@@ -172,6 +172,18 @@ class TagPostList(ListView):
 #     return render(request, 'women/addpage.html', data)
 
 class AddPage(CreateView):
+    form_class = AddPostForm
+    # model = Women
+    # fields = ['title', 'content', 'photo', 'is_published', 'cat']
+    template_name = 'women/addpage.html'
+    # success_url = reverse_lazy('home')
+    extra_context = {
+        'title': 'Добавление статьи',
+        'menu': menu,
+    }
+
+
+class UpdatePage(UpdateView):
     model = Women
     fields = ['title', 'content', 'photo', 'is_published', 'cat']
     template_name = 'women/addpage.html'
@@ -182,7 +194,9 @@ class AddPage(CreateView):
     }
 
 
-class UpdateView(UpdateView):
+class DeletePage(DeleteView):
+    model = Women
+    success_url = reverse_lazy('home')
 
 
 def contact(request):
